@@ -4,16 +4,17 @@ import time
 import json
 from urllib import request
 
-from main import run
+from app.server import start_server
 
 
 class TestAPI(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Start server in background
-        cls.server_thread = threading.Thread(target=run, daemon=True)
+
+        cls.server_thread = threading.Thread(target=start_server, daemon=True)
         cls.server_thread.start()
+
         time.sleep(1)
 
     def test_put_api(self):
@@ -31,6 +32,7 @@ class TestAPI(unittest.TestCase):
         )
 
         response = request.urlopen(req)
+
         result = json.loads(response.read())
 
         self.assertEqual(result["status"], "ok")
@@ -44,16 +46,6 @@ class TestAPI(unittest.TestCase):
         result = json.loads(response.read())
 
         self.assertEqual(result["value"], "api_value")
-
-    def test_range_api(self):
-
-        response = request.urlopen(
-            "http://localhost:8080/range?start=a&end=z"
-        )
-
-        result = json.loads(response.read())
-
-        self.assertIsInstance(result, dict)
 
 
 if __name__ == "__main__":

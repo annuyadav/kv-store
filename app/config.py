@@ -1,0 +1,4 @@
+DATA_DIR = "data"
+WAL_FILE = "wal.log"
+MEMTABLE_LIMIT = 1000
+PORT = 8080
