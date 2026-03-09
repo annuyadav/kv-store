@@ -418,6 +418,10 @@ Possible enhancements include:
 - Background compaction
 - Distributed replication
 - Horizontal sharding
+- add logging
+- Add Load Test Script
+- Add Docker Support
+- Add Benchmark Results
 
 ---
 
