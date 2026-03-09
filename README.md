@@ -20,43 +20,28 @@ The storage engine is designed to provide:
 
 ---
 
-# Architecture Overview
-
-The system consists of two main components:
-
-```
-Client
-   |
-   v
-HTTP Server (main.py)
-   |
-   v
-Storage Engine (storage_engine.py)
-```
-
-The storage engine follows a simplified **Log Structured Merge Tree (LSM Tree)** architecture similar to systems like LevelDB and RocksDB.
-
----
-
-# Architecture Diagram
+# Architecture
 
 ```
                  Client
                    |
                    v
               HTTP Server
-               (main.py)
+                (app/server.py)
+                   |
+                   v
+              Request Handler
+                (app/handlers.py)
                    |
                    v
             Storage Engine
-           (storage_engine.py)
+             (storage/engine.py)
                    |
-     --------------------------------
-     |              |               |
-     v              v               v
- Write Ahead      MemTable        SSTables
- Log (WAL)       (In Memory)       (Disk)
-   wal.log
+        --------------------------------
+        |              |               |
+        v              v               v
+ Write Ahead Log     MemTable        SSTables
+     wal.log        (In Memory)       (Disk)
 ```
 
 ---
@@ -309,20 +294,34 @@ Deletion is implemented using **tombstones**.
 # Project Structure
 
 ```
-kv-store
+kv-store/
 │
-├── main.py
-├── storage_engine.py
-├── wal.log
-└── data/
+├── app/
+│   ├── server.py
+│   ├── handlers.py
+│   └── config.py
+│
+├── storage/
+│   └── engine.py
+│
+├── data/
+│
+├── tests/
+│   ├── test_engine.py
+│   └── test_api.py
+│
+├── run.py
+└── README.md
 ```
 
-| File | Description |
-|-----|-------------|
-| main.py | HTTP server exposing API endpoints |
-| storage_engine.py | Core storage engine implementation |
-| wal.log | Write-ahead log used for crash recovery |
-| data/ | Directory containing SSTable files |
+| Component | Description |
+|--------|--------|
+| server.py | HTTP server |
+| handlers.py | request handlers |
+| config.py | configuration |
+| engine.py | storage engine |
+| data/ | persistent storage |
+| tests/ | unit tests |
 
 ---
 
@@ -352,7 +351,7 @@ cd kv-store
 ## 3. Start the Server
 
 ```
-python main.py
+python run.py
 ```
 
 Server will start on:
